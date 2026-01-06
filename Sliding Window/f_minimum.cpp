@@ -17,31 +17,35 @@ int main() {
     vector<ll> arr(n);
     arr[0]=x;
     for(int i=1;i<n;i++) arr[i]=(a*arr[i-1]+b)%c;
-     // O(nlogk) soln will fail here
-    // map<ll,int> freq;
-    // set<ll> s;
+   // (set+map) will not work
+    deque<int> dq; // bcz constrains are high here 1e7, unlike previous problems
+    // minimum element will be in the front
+    // logic:- maintain an increasing deque(use indices to handle duplicate)
+    for(int i=0;i<k;i++){
+        while(!dq.empty() && arr[dq.back()]>=arr[i])
+            dq.pop_back();
+            dq.push_back(i);
+    }
 
-    // for(int i=0;i<k;i++){
-    //     s.insert(arr[i]);
-    //     freq[arr[i]]++;
-    // }
+    ll ans=arr[dq.front()];
 
-    // ll ans=*s.begin();
-
-    // int left=0,right=k;
-    // while(right<n){
-    //     ll num=arr[right];
-    //     freq[num]++;
-    //     s.insert(num);
-
-    //     ll old=arr[left];
-    //     freq[old]--;
-    //     if(freq[old]==0) s.erase(old);
-
-    //     ans^=*s.begin();
-
-    //     left++; right++;
-    // }
- 
     
+    int left=0,right=k;
+    while(right<n){
+
+        // agr mimimum hi left hai (isiliye index use kiya tha )
+        if(dq.front()==left)
+            dq.pop_front();
+
+        // adding new element
+        while(!dq.empty() && arr[dq.back()]>=arr[right])
+            dq.pop_back();
+        dq.push_back(right);
+
+        ans^=arr[dq.front()];
+
+        left++; right++;
+    }
+
+    cout<<ans<<" ";
 }
